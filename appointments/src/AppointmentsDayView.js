@@ -9,11 +9,11 @@ export const Appointment = ({ customer }) => {
   return <div>{customer.firstName}</div>;
 };
 
-export const AppointmentsDaysView = ({ appointments }) => {
+export const AppointmentsDayView = ({ appointments }) => {
   const [selectedAppointment, setSelectedAppointment] = useState(0);
 
   return (
-    <div id="appointmentsDaysView">
+    <div id="AppointmentsDayView">
       <ol>
         {appointments.map((appointment, i) => (
           <li key={appointment.startsAt}>
