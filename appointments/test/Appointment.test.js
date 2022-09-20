@@ -1,7 +1,8 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { act } from "react-dom/test-utils";
-import { Appointment } from "../src/Appointment";
+import { Appointment, AppointmentsDaysView } from "../src/Appointment";
+import ReactTestUtils from "react-dom/test-utils";
 
 describe("Appointment", () => {
   let container;
@@ -28,6 +29,66 @@ describe("Appointment", () => {
 
     render(<Appointment customer={customer} />);
 
+    expect(container.textContent).toMatch("Jordan");
+  });
+});
+
+describe("AppointmentsDaysView", () => {
+  let container;
+  let root;
+  const today = new Date();
+  const appointments = [
+    { startsAt: today.setHours(12, 0), customer: { firstName: "Ashley" } },
+    { startsAt: today.setHours(13, 0), customer: { firstName: "Jordan" } },
+  ];
+
+  beforeEach(() => {
+    container = document.createElement("div");
+    root = createRoot(container);
+  });
+
+  const render = (component) => act(() => root.render(component));
+
+  it("renders a div with the right id", () => {
+    render(<AppointmentsDaysView appointments={[]} />);
+    expect(container.querySelector("div#appointmentsDaysView")).not.toBeNull();
+  });
+
+  it("renders multiple appointments in an ol element", () => {
+    render(<AppointmentsDaysView appointments={appointments} />);
+    expect(container.querySelector("ol")).not.toBeNull();
+    expect(container.querySelector("ol").children).toHaveLength(2);
+  });
+
+  it("renders each appointment in an li", () => {
+    render(<AppointmentsDaysView appointments={appointments} />);
+    expect(container.querySelectorAll("li")).toHaveLength(2);
+    expect(container.querySelectorAll("li")[0].textContent).toEqual("12:00");
+    expect(container.querySelectorAll("li")[1].textContent).toEqual("13:00");
+  });
+
+  it("initially shows a message saying there are no appointments today", () => {
+    render(<AppointmentsDaysView appointments={[]} />);
+    expect(container.textContent).toMatch(
+      "There are no appointments scheduled for today."
+    );
+  });
+
+  it("selects the first appointment by default", () => {
+    render(<AppointmentsDaysView appointments={appointments} />);
+    expect(container.textContent).toMatch("Ashley");
+  });
+
+  it("has a button in each li", () => {
+    render(<AppointmentsDaysView appointments={appointments} />);
+    expect(container.querySelectorAll("li > button")).toHaveLength(2);
+    expect(container.querySelectorAll("li > button")[0].type).toEqual("button");
+  });
+
+  it("renders another appointment when selected", () => {
+    render(<AppointmentsDaysView appointments={appointments} />);
+    const button = container.querySelectorAll("button")[1];
+    act(() => ReactTestUtils.Simulate.click(button));
     expect(container.textContent).toMatch("Jordan");
   });
 });
