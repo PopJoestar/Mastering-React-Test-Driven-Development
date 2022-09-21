@@ -6,7 +6,7 @@ import ReactTestUtils from "react-dom/test-utils";
 
 describe("Appointment", () => {
   let container;
-  let customer;
+  let customer = {};
   let root;
 
   beforeEach(() => {
@@ -15,6 +15,13 @@ describe("Appointment", () => {
   });
 
   const render = (component) => act(() => root.render(component));
+  const appointmentTable = () =>
+    container.querySelector("#appointmentView > table");
+
+  it("renders a table", () => {
+    render(<Appointment customer={customer} />);
+    expect(container.querySelector("table")).not.toBeNull();
+  });
 
   it("renders the customer first name", () => {
     customer = { firstName: "Ashley" };
@@ -30,6 +37,51 @@ describe("Appointment", () => {
     render(<Appointment customer={customer} />);
 
     expect(container.textContent).toMatch("Jordan");
+  });
+
+  it("renders the customer lastName", () => {
+    customer = { lastName: "Rakoto" };
+
+    render(<Appointment customer={customer} />);
+
+    expect(appointmentTable().textContent).toMatch("Rakoto");
+  });
+
+  it("renders the salon service", () => {
+    const service = "Cut";
+
+    render(<Appointment customer={customer} service={service} />);
+
+    expect(expect(appointmentTable().textContent).toMatch(service));
+  });
+
+  it("renders a heading with the time", () => {
+    const today = new Date();
+    const timestamp = today.setHours(9, 0, 0);
+
+    render(<Appointment customer={customer} startsAt={timestamp} />);
+    expect(container.querySelector("h3")).not.toBeNull();
+    expect(container.querySelector("h3").textContent).toEqual(
+      "Today's appointment at 09:00"
+    );
+  });
+
+  it("renders the appointments notes", () => {
+    const notes = "caca";
+    render(<Appointment customer={customer} notes={notes} />);
+    expect(appointmentTable().textContent).toMatch(notes);
+  });
+
+  it("renders the stylist name", () => {
+    const stylist = "Bertrand";
+    render(<Appointment customer={customer} stylist={stylist} />);
+    expect(appointmentTable().textContent).toMatch(stylist);
+  });
+
+  it("renders the customer phone number", () => {
+    customer = { phoneNumber: "0123345" };
+    render(<Appointment customer={customer} />);
+    expect(appointmentTable().textContent).toMatch(customer.phoneNumber);
   });
 });
 
@@ -90,5 +142,12 @@ describe("AppointmentsDayView", () => {
     const button = container.querySelectorAll("button")[1];
     act(() => ReactTestUtils.Simulate.click(button));
     expect(container.textContent).toMatch("Jordan");
+  });
+
+  it("adds toggle class to button when selected", () => {
+    render(<AppointmentsDayView appointments={appointments} />);
+    const button = container.querySelectorAll("button")[1];
+    act(() => ReactTestUtils.Simulate.click(button));
+    expect(button.className).toMatch("toggled");
   });
 });

@@ -5,8 +5,44 @@ const appointmentTimeOfDay = (startsAt) => {
   return `${h}:${m}`;
 };
 
-export const Appointment = ({ customer }) => {
-  return <div>{customer.firstName}</div>;
+export const Appointment = ({
+  customer,
+  startsAt,
+  service,
+  notes,
+  stylist,
+}) => {
+  return (
+    <div id="appointmentView">
+      <h3>Today's appointment at {appointmentTimeOfDay(startsAt)}</h3>
+      <table>
+        <tbody>
+          <tr>
+            <td>Customer</td>
+            <td>
+              {customer.firstName} {customer.lastName}
+            </td>
+          </tr>
+          <tr>
+            <td>Phone number</td>
+            <td>{customer.phoneNumber}</td>
+          </tr>
+          <tr>
+            <td>Service</td>
+            <td>{service}</td>
+          </tr>
+          <tr>
+            <td>Notes</td>
+            <td>{notes}</td>
+          </tr>
+          <tr>
+            <td>Stylist</td>
+            <td>{stylist}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export const AppointmentsDayView = ({ appointments }) => {
@@ -19,6 +55,7 @@ export const AppointmentsDayView = ({ appointments }) => {
           <li key={appointment.startsAt}>
             <button
               type="button"
+              className={i == selectedAppointment ? "toggled" : null}
               onClick={() => {
                 setSelectedAppointment(i);
               }}
@@ -31,7 +68,7 @@ export const AppointmentsDayView = ({ appointments }) => {
       {appointments.length == 0 ? (
         <p>There are no appointments scheduled for today.</p>
       ) : (
-        <Appointment customer={appointments[selectedAppointment].customer} />
+        <Appointment {...appointments[selectedAppointment]} />
       )}
     </div>
   );
