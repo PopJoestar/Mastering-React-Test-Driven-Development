@@ -105,4 +105,22 @@ describe("CustomerForm", () => {
     itSubmitsExistingValue("firstName", "Ashley");
     itSubmitsNewValue("firstName", "Jamie");
   });
+
+  describe("last name field", () => {
+    itRendersAsATextBox("lastName");
+    itIncludesTheExistingValue("lastName");
+    itRendersALabel("lastName", "Last name");
+    itAssignsAnIdThatMatchesTheLabelId("lastName");
+    itSubmitsExistingValue("lastName", "Jones");
+    itSubmitsNewValue("lastName", "Ash");
+  });
+
+  describe("phone number field", () => {
+    itRendersAsATextBox("phoneNumber");
+    itIncludesTheExistingValue("phoneNumber");
+    itRendersALabel("phoneNumber", "Phone number");
+    itAssignsAnIdThatMatchesTheLabelId("phoneNumber");
+    itSubmitsExistingValue("phoneNumber", "012345");
+    itSubmitsNewValue("phoneNumber", "1234");
+  });
 });
