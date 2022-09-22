@@ -12,22 +12,10 @@ export const CustomerForm = ({
     phoneNumber,
   });
 
-  const handleChangeFirstName = ({ target }) =>
+  const handleChange = ({ target }) =>
     setCustomer((customer) => ({
       ...customer,
-      firstName: target.value,
-    }));
-
-  const handleChangeLastName = ({ target }) =>
-    setCustomer((customer) => ({
-      ...customer,
-      lastName: target.value,
-    }));
-
-  const handleChangePhoneNumber = ({ target }) =>
-    setCustomer((customer) => ({
-      ...customer,
-      phoneNumber: target.value,
+      [target.name]: target.value,
     }));
 
   return (
@@ -38,7 +26,7 @@ export const CustomerForm = ({
         name="firstName"
         value={firstName}
         id="firstName"
-        onChange={handleChangeFirstName}
+        onChange={handleChange}
         readOnly
       />
 
@@ -48,7 +36,7 @@ export const CustomerForm = ({
         name="lastName"
         value={lastName}
         id="lastName"
-        onChange={handleChangeLastName}
+        onChange={handleChange}
         readOnly
       />
 
@@ -58,9 +46,10 @@ export const CustomerForm = ({
         name="phoneNumber"
         value={phoneNumber}
         id="phoneNumber"
-        onChange={handleChangePhoneNumber}
+        onChange={handleChange}
         readOnly
       />
+      <input type={"submit"} value="Add" />
     </form>
   );
 };

@@ -24,11 +24,6 @@ describe("CustomerForm", () => {
 
   const field = (name) => form("customer").elements[name];
 
-  it("renders a form", () => {
-    render(<CustomerForm />);
-    expect(form("customer")).not.toBeNull();
-  });
-
   const itRendersAsATextBox = (fieldName) =>
     it("renders as a text box", () => {
       render(<CustomerForm />);
@@ -87,7 +82,7 @@ describe("CustomerForm", () => {
 
       act(() =>
         ReactTestUtils.Simulate.change(field(fieldName), {
-          target: { value },
+          target: { value, name: fieldName },
         })
       );
 
@@ -122,5 +117,16 @@ describe("CustomerForm", () => {
     itAssignsAnIdThatMatchesTheLabelId("phoneNumber");
     itSubmitsExistingValue("phoneNumber", "012345");
     itSubmitsNewValue("phoneNumber", "1234");
+  });
+
+  it("renders a form", () => {
+    render(<CustomerForm />);
+    expect(form("customer")).not.toBeNull();
+  });
+
+  it("has a submit button", () => {
+    render(<CustomerForm />);
+    const submitButton = container.querySelector('input[type="submit"]');
+    expect(submitButton).not.toBeNull();
   });
 });
