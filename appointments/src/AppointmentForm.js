@@ -109,7 +109,9 @@ const TimeSlotTable = ({
 
 export const AppointmentForm = ({
   selectableServices,
+  selectableStylists,
   service,
+  stylist,
   onSubmit,
   salonOpensAt,
   salonClosesAt,
@@ -120,6 +122,7 @@ export const AppointmentForm = ({
   const [appointment, setAppointment] = useState({
     service,
     startsAt,
+    stylist,
   });
 
   const handleChange = ({ target }) => {
@@ -152,6 +155,15 @@ export const AppointmentForm = ({
           <option key={s}>{s}</option>
         ))}
       </select>
+
+      <label htmlFor="stylist">Stylist</label>
+      <select name="stylist" value={stylist} id="stylist" readOnly>
+        <option />
+        {selectableStylists.map((s) => (
+          <option key={s}>{s}</option>
+        ))}
+      </select>
+
       <TimeSlotTable
         salonOpensAt={salonOpensAt}
         salonClosesAt={salonClosesAt}
@@ -160,6 +172,7 @@ export const AppointmentForm = ({
         checkedTimeSlot={appointment.startsAt}
         handleChange={handleStartsAtChange}
       />
+      <input type={"submit"} value="Add" />
     </form>
   );
 };
@@ -177,4 +190,5 @@ AppointmentForm.defaultProps = {
   salonClosesAt: 19,
   today: new Date(),
   availableTimeSlots: [],
+  selectableStylists: ["Bruce", "Dick", "Grayson", "Wayne"],
 };
