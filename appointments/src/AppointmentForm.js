@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 const timeIncrements = (numTimes, startTime, increment) =>
   Array(numTimes)
@@ -36,14 +36,30 @@ const mergeDateAndTime = (date, timeSlot) => {
   );
 };
 
-const RadioButtonIfAvailable = ({ availableTimeSlots, timeSlot, date }) => {
+const RadioButtonIfAvailable = ({
+  availableTimeSlots,
+  timeSlot,
+  date,
+  checkedTimeSlot,
+  handleChange,
+}) => {
   const startsAt = mergeDateAndTime(date, timeSlot);
   if (
     availableTimeSlots.some(
       (availableTimeSlot) => availableTimeSlot.startsAt === startsAt
     )
   ) {
-    return <input name="startsAt" type="radio" value={startsAt} />;
+    const isChecked = startsAt === checkedTimeSlot;
+
+    return (
+      <input
+        name="startsAt"
+        type="radio"
+        value={startsAt}
+        checked={isChecked}
+        onChange={handleChange}
+      />
+    );
   }
   return null;
 };
@@ -53,6 +69,8 @@ const TimeSlotTable = ({
   salonClosesAt,
   today,
   availableTimeSlots,
+  checkedTimeSlot,
+  handleChange,
 }) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
   const dates = weeklyDateValues(today);
@@ -77,6 +95,8 @@ const TimeSlotTable = ({
                   availableTimeSlots={availableTimeSlots}
                   date={date}
                   timeSlot={timeSlot}
+                  checkedTimeSlot={checkedTimeSlot}
+                  handleChange={handleChange}
                 />
               </td>
             ))}
@@ -95,8 +115,12 @@ export const AppointmentForm = ({
   salonClosesAt,
   today,
   availableTimeSlots,
+  startsAt,
 }) => {
-  const [appointment, setAppointment] = useState({ service });
+  const [appointment, setAppointment] = useState({
+    service,
+    startsAt,
+  });
 
   const handleChange = ({ target }) => {
     setAppointment((appointment) => ({
@@ -104,6 +128,15 @@ export const AppointmentForm = ({
       [target.name]: target.value,
     }));
   };
+
+  const handleStartsAtChange = useCallback(
+    ({ target: { value } }) =>
+      setAppointment((appointment) => ({
+        ...appointment,
+        startsAt: parseInt(value),
+      })),
+    []
+  );
 
   return (
     <form id="appointment" onSubmit={() => onSubmit(appointment)}>
@@ -124,6 +157,8 @@ export const AppointmentForm = ({
         salonClosesAt={salonClosesAt}
         today={today}
         availableTimeSlots={availableTimeSlots}
+        checkedTimeSlot={appointment.startsAt}
+        handleChange={handleStartsAtChange}
       />
     </form>
   );
