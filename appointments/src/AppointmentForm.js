@@ -118,6 +118,7 @@ export const AppointmentForm = ({
   today,
   availableTimeSlots,
   startsAt,
+  serviceStylist,
 }) => {
   const [appointment, setAppointment] = useState({
     service,
@@ -141,6 +142,15 @@ export const AppointmentForm = ({
     []
   );
 
+  const _selectableStylists =
+    serviceStylist[appointment.service] ?? selectableStylists;
+
+  const timeSlotsForStylist = appointment.stylist
+    ? availableTimeSlots.filter((slot) =>
+        slot.stylists.includes(appointment.stylist)
+      )
+    : availableTimeSlots;
+
   return (
     <form id="appointment" onSubmit={() => onSubmit(appointment)}>
       <label htmlFor="service">Service</label>
@@ -157,9 +167,14 @@ export const AppointmentForm = ({
       </select>
 
       <label htmlFor="stylist">Stylist</label>
-      <select name="stylist" value={stylist} id="stylist" readOnly>
+      <select
+        name="stylist"
+        value={stylist}
+        id="stylist"
+        onChange={handleChange}
+      >
         <option />
-        {selectableStylists.map((s) => (
+        {_selectableStylists.map((s) => (
           <option key={s}>{s}</option>
         ))}
       </select>
@@ -168,7 +183,7 @@ export const AppointmentForm = ({
         salonOpensAt={salonOpensAt}
         salonClosesAt={salonClosesAt}
         today={today}
-        availableTimeSlots={availableTimeSlots}
+        availableTimeSlots={timeSlotsForStylist}
         checkedTimeSlot={appointment.startsAt}
         handleChange={handleStartsAtChange}
       />
@@ -191,4 +206,9 @@ AppointmentForm.defaultProps = {
   today: new Date(),
   availableTimeSlots: [],
   selectableStylists: ["Bruce", "Dick", "Grayson", "Wayne"],
+  serviceStylist: {
+    Cut: ["Bruce", "Grayson"],
+    Extensions: ["Wayne", "Dick"],
+    "Beard trim": ["Bruce", "Dick", "Grayson", "Wayne"],
+  },
 };

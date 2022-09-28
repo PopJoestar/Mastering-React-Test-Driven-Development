@@ -47,21 +47,9 @@ describe("AppointmentForm", () => {
     });
   };
 
-  const itListsAllAvailableOptions = (fieldName, options) => {
-    it("lists all available options", () => {
-      render(<AppointmentForm {...options} />);
-      const optionNodes = Array.from(field(fieldName).childNodes);
-      const renderedOptions = optionNodes.map((node) => node.textContent);
-
-      expect(renderedOptions).toEqual(
-        expect.arrayContaining(Object.values(options)[0])
-      );
-    });
-  };
-
-  const itPreSelectTheExistingValue = (fieldName, options, value) => {
+  const itPreSelectTheExistingValue = (fieldName, props, value) => {
     it("pre-selects the existing value", () => {
-      render(<AppointmentForm {...options} {...{ [fieldName]: value }} />);
+      render(<AppointmentForm {...props} {...{ [fieldName]: value }} />);
 
       const option = findOption(field(fieldName), value);
 
@@ -104,20 +92,19 @@ describe("AppointmentForm", () => {
     });
   };
 
-  const itSavesNewValueWhenSubmitted = (fieldName, options, value) => {
+  const itSavesNewValueWhenSubmitted = (fieldName) => {
     it("saves new value when submitted", () => {
       expect.hasAssertions();
 
       render(
         <AppointmentForm
-          {...options}
-          onSubmit={(props) => expect(props[fieldName]).toEqual(value)}
+          onSubmit={(props) => expect(props[fieldName]).toEqual("newValue")}
         />
       );
 
       act(() => {
         ReactTestUtils.Simulate.change(field(fieldName), {
-          target: { value, name: fieldName },
+          target: { value: "newValue", name: fieldName },
         });
       });
 
@@ -130,9 +117,6 @@ describe("AppointmentForm", () => {
   describe("service field", () => {
     itRendersAsASelectBox("service");
     itInitiallyHasABlankValueChosen("service");
-    itListsAllAvailableOptions("service", {
-      selectableServices: ["Cut", "Blow-dry"],
-    });
     itPreSelectTheExistingValue(
       "service",
       { selectableServices: ["Cut", "Blow-dry"] },
@@ -141,17 +125,24 @@ describe("AppointmentForm", () => {
     itRendersALabel("service", "Service");
     itAssignsAnIdThatMatchesTheLabelId("service");
     itSavesExistingValueWhenSubmitted("service", "Cut");
-    itSavesNewValueWhenSubmitted(
-      "service",
-      { selectableServices: ["Cut", "Blow-dry"] },
-      "Blow-dry"
-    );
+    itSavesNewValueWhenSubmitted("service");
+
+    it("lists all salon services", () => {
+      const selectableServices = ["Cut", "Blow-dry"];
+
+      render(<AppointmentForm selectableServices={selectableServices} />);
+      const optionNodes = Array.from(field("service").childNodes);
+      const renderedService = optionNodes.map((node) => node.textContent);
+
+      expect(renderedService).toEqual(
+        expect.arrayContaining(selectableServices)
+      );
+    });
   });
 
   describe("stylist field", () => {
     itRendersAsASelectBox("stylist");
     itInitiallyHasABlankValueChosen("stylist");
-    itListsAllAvailableOptions("stylist", { selectableStylists: ["A", "B"] });
     itPreSelectTheExistingValue(
       "stylist",
       { selectableStylists: ["A", "B"] },
@@ -160,6 +151,59 @@ describe("AppointmentForm", () => {
     itRendersALabel("stylist", "Stylist");
     itAssignsAnIdThatMatchesTheLabelId("stylist");
     itSavesExistingValueWhenSubmitted("stylist", "A");
+    itSavesNewValueWhenSubmitted("stylist");
+
+    it("lists only stylists that can perfom the selected service", () => {
+      const selectableServices = ["1", "2"];
+      const selectableStylists = ["A", "B", "C", "D"];
+      const serviceStylist = {
+        1: ["A", "D"],
+      };
+
+      render(
+        <AppointmentForm
+          selectableServices={selectableServices}
+          selectableStylists={selectableStylists}
+          service={"1"}
+          serviceStylist={serviceStylist}
+        />
+      );
+
+      act(() => {
+        ReactTestUtils.Simulate.change(field("service"), {
+          target: { value: "1", name: "service" },
+        });
+      });
+
+      const optionNodes = Array.from(field("stylist").childNodes);
+      const renderedStylist = optionNodes.map((node) => node.textContent);
+      expect(renderedStylist).toEqual(["", "A", "D"]);
+    });
+
+    it("filters appointments time by selected stylist", () => {
+      const today = new Date();
+      const availableTimeSlots = [
+        { startsAt: today.setHours(9, 0, 0, 0), stylists: ["A", "B"] },
+        { startsAt: today.setHours(9, 30, 0, 0), stylists: ["A"] },
+      ];
+
+      render(
+        <AppointmentForm
+          availableTimeSlots={availableTimeSlots}
+          today={today}
+        />
+      );
+
+      act(() => {
+        ReactTestUtils.Simulate.change(field("stylist"), {
+          target: { value: "B", name: "stylist" },
+        });
+      });
+
+      const cells = timeSlotTable().querySelectorAll("td");
+      expect(cells[0].querySelector('input[type="radio"]')).not.toBeNull();
+      expect(cells[7].querySelector('input[type="radio"]')).toBeNull();
+    });
   });
 
   describe("time slot table", () => {
