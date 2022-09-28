@@ -3,6 +3,28 @@ import { createContainer } from "./domManipulators";
 import { CustomerForm } from "../src/CustomerForm";
 import ReactTestUtils, { act } from "react-dom/test-utils";
 
+const spy = () => {
+  let receivedArguments;
+  return {
+    fn: (...args) => (receivedArguments = args),
+    receivedArguments: () => receivedArguments,
+    receivedArgument: (n) => receivedArguments[n],
+  };
+};
+
+expect.extend({
+  toHaveBeenCalledMine(received) {
+    if (received.receivedArguments() === undefined) {
+      return {
+        pass: false,
+        message: () => "Spy not called",
+      };
+    }
+
+    return { pass: true, message: () => "Spy was called" };
+  },
+});
+
 describe("CustomerForm", () => {
   let render;
   let container;
@@ -53,20 +75,20 @@ describe("CustomerForm", () => {
     });
   };
 
-  const itSubmitsExistingValue = (fieldName, value) => {
+  const itSubmitsExistingValue = (fieldName) => {
     it("saves the existing value when submitted", async () => {
-      expect.hasAssertions();
+      const submitSpy = spy();
 
       render(
-        <CustomerForm
-          {...{ [fieldName]: value }}
-          onSubmit={(props) => expect(props[fieldName]).toEqual(value)}
-        />
+        <CustomerForm {...{ [fieldName]: "value" }} onSubmit={submitSpy.fn} />
       );
 
       act(() => {
         ReactTestUtils.Simulate.submit(form("customer"));
       });
+      // expect(submitSpy.receivedArguments()).toBeDefined();
+      expect(submitSpy).toHaveBeenCalledMine();
+      expect(submitSpy.receivedArgument(0)[fieldName]).toEqual("value");
     });
   };
 
