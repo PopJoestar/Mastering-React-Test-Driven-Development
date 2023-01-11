@@ -23,7 +23,7 @@ describe("Appointment", () => {
 
     render(<Appointment customer={customer} />);
 
-    expect(container.textContent).toMatch("Ashley");
+    expect(container).toContainText("Ashley");
   });
 
   it("renders another customer first name", () => {
@@ -31,15 +31,14 @@ describe("Appointment", () => {
 
     render(<Appointment customer={customer} />);
 
-    expect(container.textContent).toMatch("Jordan");
+    expect(container).toContainText("Jordan");
   });
 
   it("renders the customer lastName", () => {
     customer = { lastName: "Rakoto" };
 
     render(<Appointment customer={customer} />);
-
-    expect(appointmentTable().textContent).toMatch("Rakoto");
+    expect(appointmentTable()).toContainText("Rakoto");
   });
 
   it("renders the salon service", () => {
@@ -47,7 +46,7 @@ describe("Appointment", () => {
 
     render(<Appointment customer={customer} service={service} />);
 
-    expect(expect(appointmentTable().textContent).toMatch(service));
+    expect(appointmentTable()).toContainText(service);
   });
 
   it("renders a heading with the time", () => {
@@ -56,7 +55,7 @@ describe("Appointment", () => {
 
     render(<Appointment customer={customer} startsAt={timestamp} />);
     expect(container.querySelector("h3")).not.toBeNull();
-    expect(container.querySelector("h3").textContent).toEqual(
+    expect(container.querySelector("h3")).toContainText(
       "Today's appointment at 09:00"
     );
   });
@@ -64,19 +63,19 @@ describe("Appointment", () => {
   it("renders the appointments notes", () => {
     const notes = "caca";
     render(<Appointment customer={customer} notes={notes} />);
-    expect(appointmentTable().textContent).toMatch(notes);
+    expect(appointmentTable()).toContainText(notes);
   });
 
   it("renders the stylist name", () => {
     const stylist = "Bertrand";
     render(<Appointment customer={customer} stylist={stylist} />);
-    expect(appointmentTable().textContent).toMatch(stylist);
+    expect(appointmentTable()).toContainText(stylist);
   });
 
   it("renders the customer phone number", () => {
     customer = { phoneNumber: "0123345" };
     render(<Appointment customer={customer} />);
-    expect(appointmentTable().textContent).toMatch(customer.phoneNumber);
+    expect(appointmentTable()).toContainText(customer.phoneNumber);
   });
 });
 
@@ -113,14 +112,14 @@ describe("AppointmentsDayView", () => {
 
   it("initially shows a message saying there are no appointments today", () => {
     render(<AppointmentsDayView appointments={[]} />);
-    expect(container.textContent).toMatch(
+    expect(container).toContainText(
       "There are no appointments scheduled for today."
     );
   });
 
   it("selects the first appointment by default", () => {
     render(<AppointmentsDayView appointments={appointments} />);
-    expect(container.textContent).toMatch("Ashley");
+    expect(container).toContainText("Ashley");
   });
 
   it("has a button in each li", () => {
@@ -133,7 +132,7 @@ describe("AppointmentsDayView", () => {
     render(<AppointmentsDayView appointments={appointments} />);
     const button = container.querySelectorAll("button")[1];
     click(button);
-    expect(container.textContent).toMatch("Jordan");
+    expect(container).toContainText("Jordan");
   });
 
   it("adds toggle class to button when selected", () => {
