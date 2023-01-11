@@ -1,6 +1,5 @@
+import { stripTerminalColor } from "./helpers";
 import { toHaveClass } from "./toHaveClass";
-
-const stripTerminalColor = (text) => text.replace(/\x1B\[\d+m/g, "");
 
 describe("toHaveClass matcher", () => {
   it("returns pass is true when class is found in the given DOM element", () => {
