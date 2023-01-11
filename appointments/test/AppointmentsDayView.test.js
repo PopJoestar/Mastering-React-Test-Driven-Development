@@ -140,6 +140,6 @@ describe("AppointmentsDayView", () => {
   it("adds toggle class to button when selected", () => {
     render(<AppointmentsDayView appointments={appointments} />);
     click(secondButton());
-    expect(secondButton().className).toMatch("toggled");
+    expect(secondButton()).toHaveClass("toggled");
   });
 });
