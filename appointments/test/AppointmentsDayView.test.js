@@ -1,6 +1,4 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
-import { act } from "react-dom/test-utils";
 import { Appointment, AppointmentsDayView } from "../src/AppointmentsDayView";
 import { click, createContainer } from "./reactTestExtensions";
 
@@ -83,8 +81,8 @@ describe("Appointment", () => {
 });
 
 describe("AppointmentsDayView", () => {
-  let container;
-  let root;
+  let container, render;
+
   const today = new Date();
   const appointments = [
     { startsAt: today.setHours(12, 0), customer: { firstName: "Ashley" } },
@@ -92,11 +90,8 @@ describe("AppointmentsDayView", () => {
   ];
 
   beforeEach(() => {
-    container = document.createElement("div");
-    root = createRoot(container);
+    ({ render, container } = createContainer());
   });
-
-  const render = (component) => act(() => root.render(component));
 
   it("renders a div with the right id", () => {
     render(<AppointmentsDayView appointments={[]} />);
