@@ -3,18 +3,16 @@ import { createRoot } from "react-dom/client";
 import { act } from "react-dom/test-utils";
 import { Appointment, AppointmentsDayView } from "../src/AppointmentsDayView";
 import ReactTestUtils from "react-dom/test-utils";
+import { createContainer } from "./reactTestExtensions";
 
 describe("Appointment", () => {
-  let container;
+  let container, render;
   let customer = {};
-  let root;
 
   beforeEach(() => {
-    container = document.createElement("div");
-    root = createRoot(container);
+    ({ render, container } = createContainer());
   });
 
-  const render = (component) => act(() => root.render(component));
   const appointmentTable = () =>
     container.querySelector("#appointmentView > table");
 

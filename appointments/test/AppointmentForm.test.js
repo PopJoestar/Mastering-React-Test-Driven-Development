@@ -1,7 +1,7 @@
 import React from "react";
-import { createContainer } from "./domManipulators";
 import { AppointmentForm } from "../src/AppointmentForm";
 import ReactTestUtils, { act } from "react-dom/test-utils";
+import { createContainer } from "./reactTestExtensions";
 
 describe("AppointmentForm", () => {
   let render, container;
