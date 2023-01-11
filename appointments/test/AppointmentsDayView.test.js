@@ -2,8 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { act } from "react-dom/test-utils";
 import { Appointment, AppointmentsDayView } from "../src/AppointmentsDayView";
-import ReactTestUtils from "react-dom/test-utils";
-import { createContainer } from "./reactTestExtensions";
+import { click, createContainer } from "./reactTestExtensions";
 
 describe("Appointment", () => {
   let container, render;
@@ -138,14 +137,14 @@ describe("AppointmentsDayView", () => {
   it("renders another appointment when selected", () => {
     render(<AppointmentsDayView appointments={appointments} />);
     const button = container.querySelectorAll("button")[1];
-    act(() => ReactTestUtils.Simulate.click(button));
+    click(button);
     expect(container.textContent).toMatch("Jordan");
   });
 
   it("adds toggle class to button when selected", () => {
     render(<AppointmentsDayView appointments={appointments} />);
     const button = container.querySelectorAll("button")[1];
-    act(() => ReactTestUtils.Simulate.click(button));
+    click(button);
     expect(button.className).toMatch("toggled");
   });
 });

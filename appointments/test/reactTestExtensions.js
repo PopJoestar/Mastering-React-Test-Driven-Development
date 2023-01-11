@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { act } from "react-dom/test-utils";
+import ReactTestUtils from "react-dom/test-utils";
 
 export const createContainer = () => {
   const container = document.createElement("div");
@@ -10,3 +11,6 @@ export const createContainer = () => {
     container,
   };
 };
+
+export const click = (element) =>
+  act(() => ReactTestUtils.Simulate.click(element));
