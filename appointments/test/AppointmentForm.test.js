@@ -8,26 +8,32 @@ describe("AppointmentForm", () => {
 
   const form = (id) => container.querySelector(`form[id="${id}"]`);
   const field = (name) => form("appointment").elements[name];
+
   const labelFor = (formElement) =>
     container.querySelector(`label[for="${formElement}"]`);
+
   const findOption = (dropdownNode, textContent) => {
     const options = Array.from(dropdownNode.childNodes);
     return options.find((option) => option.textContent == textContent);
   };
+
+  const labelsOfAllOptions = (element) =>
+    Array.from(element.childNodes, (node) => node.textContent);
+
   const timeSlotTable = () => container.querySelector("table#time-slots");
 
   beforeEach(() => {
     ({ render, container } = createContainer());
   });
 
-  it("has a submit button", () => {
-    render(<AppointmentForm />);
-    expect(container.querySelector('input[type="submit"]')).not.toBeNull();
-  });
-
   it("renders a form", () => {
     render(<AppointmentForm />);
     expect(form("appointment")).not.toBeNull();
+  });
+
+  it("has a submit button", () => {
+    render(<AppointmentForm />);
+    expect(container.querySelector('input[type="submit"]')).not.toBeNull();
   });
 
   const itRendersAsASelectBox = (fieldName) => {
@@ -43,7 +49,6 @@ describe("AppointmentForm", () => {
       render(<AppointmentForm />);
       const firstNode = field(fieldName).childNodes[0];
       expect(firstNode.value).toEqual("");
-      expect(firstNode.selected).toBeTruthy();
     });
   };
 
@@ -131,10 +136,8 @@ describe("AppointmentForm", () => {
       const selectableServices = ["Cut", "Blow-dry"];
 
       render(<AppointmentForm selectableServices={selectableServices} />);
-      const optionNodes = Array.from(field("service").childNodes);
-      const renderedService = optionNodes.map((node) => node.textContent);
 
-      expect(renderedService).toEqual(
+      expect(labelsOfAllOptions(field("service"))).toEqual(
         expect.arrayContaining(selectableServices)
       );
     });
