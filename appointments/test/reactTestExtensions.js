@@ -5,6 +5,7 @@ import ReactTestUtils from "react-dom/test-utils";
 export const createContainer = () => {
   const container = document.createElement("div");
   const root = createRoot(container);
+  document.body.replaceChildren(container);
 
   return {
     render: (component) => act(() => root.render(component)),
@@ -14,3 +15,10 @@ export const createContainer = () => {
 
 export const click = (element) =>
   act(() => ReactTestUtils.Simulate.click(element));
+
+export const element = (selector) => document.querySelector(selector);
+export const elements = (selector) =>
+  Array.from(document.querySelectorAll(selector));
+export const typesOf = (elements) => elements.map((element) => element.type);
+export const textOf = (elements) =>
+  elements.map((element) => element.textContent);
