@@ -22,3 +22,7 @@ export const elements = (selector) =>
 export const typesOf = (elements) => elements.map((element) => element.type);
 export const textOf = (elements) =>
   elements.map((element) => element.textContent);
+
+export const form = (id) => element(`form[id="${id}"]`);
+export const field = (name) => form("customer").elements[name];
+export const labelFor = (formElement) => element(`label[for="${formElement}"]`);

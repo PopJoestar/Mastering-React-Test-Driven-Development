@@ -1,7 +1,13 @@
 import React from "react";
 import { CustomerForm } from "../src/CustomerForm";
 import ReactTestUtils, { act } from "react-dom/test-utils";
-import { createContainer } from "./reactTestExtensions";
+import {
+  createContainer,
+  element,
+  form,
+  field,
+  labelFor,
+} from "./reactTestExtensions";
 
 const spy = () => {
   let receivedArguments;
@@ -27,29 +33,15 @@ expect.extend({
 
 describe("CustomerForm", () => {
   let render;
-  let container;
 
   beforeEach(() => {
-    ({ render, container } = createContainer());
+    ({ render } = createContainer());
   });
-
-  const form = (id) => container.querySelector(`form[id="${id}"]`);
-  const labelFor = (formElement) =>
-    container.querySelector(`label[for="${formElement}"]`);
-
-  const expectToBeInputFieldOfTypeText = (formElement) => {
-    expect(formElement).toBeDefined();
-    expect(formElement).not.toBeNull();
-    expect(formElement.tagName).toEqual("INPUT");
-    expect(formElement.type).toEqual("text");
-  };
-
-  const field = (name) => form("customer").elements[name];
 
   const itRendersAsATextBox = (fieldName) =>
     it("renders as a text box", () => {
       render(<CustomerForm />);
-      expectToBeInputFieldOfTypeText(field(fieldName));
+      expect(field(fieldName)).toBeInputFieldOfType("text");
     });
 
   const itIncludesTheExistingValue = (fieldName) =>
@@ -114,6 +106,17 @@ describe("CustomerForm", () => {
     });
   };
 
+  it("renders a form", () => {
+    render(<CustomerForm />);
+    expect(form("customer")).not.toBeNull();
+  });
+
+  it("has a submit button", () => {
+    render(<CustomerForm />);
+    const submitButton = element('input[type="submit"]');
+    expect(submitButton).not.toBeNull();
+  });
+
   describe("first name field", () => {
     itRendersAsATextBox("firstName");
     itIncludesTheExistingValue("firstName");
@@ -139,16 +142,5 @@ describe("CustomerForm", () => {
     itAssignsAnIdThatMatchesTheLabelId("phoneNumber");
     itSubmitsExistingValue("phoneNumber", "012345");
     itSubmitsNewValue("phoneNumber", "1234");
-  });
-
-  it("renders a form", () => {
-    render(<CustomerForm />);
-    expect(form("customer")).not.toBeNull();
-  });
-
-  it("has a submit button", () => {
-    render(<CustomerForm />);
-    const submitButton = container.querySelector('input[type="submit"]');
-    expect(submitButton).not.toBeNull();
   });
 });

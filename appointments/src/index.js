@@ -9,5 +9,5 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 // root.render(<AppointmentsDayView appointments={sampleAppointments} />);
-// root.render(<CustomerForm />);
-root.render(<AppointmentForm availableTimeSlots={sampleAvailableTimeSlots} />);
+root.render(<CustomerForm />);
+// root.render(<AppointmentForm availableTimeSlots={sampleAvailableTimeSlots} />);
